@@ -25,9 +25,7 @@ app.post("/signup", async (req,res) => {
         res.send("User added success")
     } catch (err) {
         res.status(400).send("Database connection failed")
-    }
-   
-    
+    }    
 })
 
 app.get('/user',async (req,res)=>{
@@ -66,9 +64,20 @@ app.delete("/delete",async(req,res)=>{
 })
 
 app.patch("/update",async(req,res)=>{
-    const userId = req.body.userId;
+
+    const userId = req.params?.userId;
     const data = req.body;
+
     try {
+        const allowedUpdates = [ "photoUrl","about","gender","age","skills"]
+
+        const isUpdateAllowed = object.keys(data).every((k) => allowedUpdates.includes(k));
+        if (!isUpdateAllowed){
+            throw new Error("update cannot be done!")
+        }
+        if (data.skills.length >10 ){
+            throw new Error ("skills cannot be more than 10 !")
+        }
         const user = await  User.findByIdAndUpdate({_id : userId},data,{
             runValidators : true
         });
