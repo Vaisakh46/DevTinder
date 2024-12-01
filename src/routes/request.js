@@ -3,7 +3,7 @@ const requestRouter = express.Router();
 
 const { userAuth } = require("../middlewares/auth");
 
-const ConnectionRequest = require("../models/connectionRequest");
+const ConnectionRequestModel = require("../models/connectionRequest");
 const User = require("../models/user")
 
 requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
@@ -83,7 +83,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuth , async (req,re
       return res.status(400).json({message : "status not allowed"})
     }
 
-    const connectionRequest = await ConnectionRequest.findOne({
+    const connectionRequest = await ConnectionRequestModel.findOne({
       _id : requestId,
       toUserId : loggedInUser._id,
       status: "interested"
